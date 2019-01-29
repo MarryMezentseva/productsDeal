@@ -4,14 +4,21 @@ public class Product {
     public static final int DEF_DSCNT = 10;
     private String title;
     private double price;
-    private int quantity;
 
-    public double getCost() {
-        double realCost = quantity * price;
-        return realCost - (realCost * calcDiscount()) / 100;
+    public Product(String title, double price) {
+        this.title = title;
+        this.price = price;
     }
 
-    protected int calcDiscount() {
+    public Product() {
+    }
+
+    public double getCost(int quantity) {
+        double realCost = quantity * price;
+        return realCost - realCost * calcDiscount(quantity) / 100;
+    }
+
+    protected int calcDiscount(int quantity) {
         if (quantity > 10) {
             return DEF_DSCNT;
         } else {
@@ -33,14 +40,6 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 }
 

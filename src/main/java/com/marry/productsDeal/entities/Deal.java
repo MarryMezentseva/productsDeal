@@ -1,22 +1,22 @@
 package com.marry.productsDeal.entities;
 
-        import java.util.ArrayList;
-        import java.util.Date;
-        import java.util.List;
+        import java.util.*;
 
 public class Deal {
 
     private Date date = new Date();
     private User seller;
     private User buyer;
-    private List<Product> products = new ArrayList<>();
+    private final Map<Product, Integer> products = new HashMap<>();
 
-    public List<Product> getProducts() {
-        return products;
+    public Deal(User seller, User buyer) {
+        this.seller = seller;
+        this.buyer = buyer;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Date getDate() {
@@ -38,4 +38,21 @@ public class Deal {
     public void setBuyer(User buyer) {
         this.buyer = buyer;
     }
+
+    public Map<Product, Integer> getProducts() {
+        return products;
+    }
+
+    public double getSum() {
+
+        double rez = 0;
+        Set<Map.Entry<Product, Integer>> set = products.entrySet();
+        for (Map.Entry<Product, Integer> entry : set) {
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
+            rez += product.getCost(quantity);
+        }
+        return rez;
+    }
+
 }
