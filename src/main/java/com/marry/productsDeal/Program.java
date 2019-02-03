@@ -11,6 +11,7 @@ public class Program {
 
     public static void main(String[] args) {
         Program program = new Program();
+        program.productsBase();
         program.run();
     }
 
@@ -19,9 +20,9 @@ public class Program {
         printDeal();
     }
 
-    private boolean checkCondition(String msg) {//rename: checkCondition(String msg)
+    private boolean checkCondition(String msg) {
         String answer = keyboard(msg + "(y - Yes, n - No)");
-        return "y".compareToIgnoreCase(answer) == 0;// make swap of arguments
+        return "y".compareToIgnoreCase(answer) == 0;
     }
 
     private Deal inputDeal() {
@@ -34,15 +35,12 @@ public class Program {
 
         Deal deal = new Deal(seller, buyer);
 
-        //add loop (while or do-while) here
         while (checkCondition("input products?")) {
             Product product = inputProduct();
-            //add to list your product
             allProducts.add(product);
-            int quantity = Integer.parseInt(keyboard("quantity for product "));
+            int quantity = Integer.parseInt(keyboard("quantity of product "));
             deal.getProducts().put(product, quantity);
         }
-        //check if the deal contains more than 1 product: deal.getProducts().size()>0
         if (deal.getProducts().size() < 1) {
             System.out.println("You should choose or create 1 product at least");
             System.exit(-1);
@@ -51,28 +49,33 @@ public class Program {
     }
 
     private Product inputProduct() {
+        while (checkCondition("do you want to choose products from data base?")) {
+            Product fromBase = null;
+            try {
+                fromBase = findFromProductsBase();
+            } catch (NonexistentProduct nonexistentProduct) {
+                nonexistentProduct.printStackTrace();
+            }
+            return fromBase;
+        }
         Product product = null;
-        if (checkCondition("do you want to choose products from list?")) {//correct message
+        if (checkCondition("do you want to choose products from list?")) {
             String productModeInput = keyboard("1 - CameraProduct, 2 - ShoesProduct");
-            String productTitle = keyboard("title ");
-            double productPrice = Double.parseDouble(keyboard("price "));
 
-            switch (productModeInput) {//rename
+            switch (productModeInput) {
                 case "1":
-                    //move it to the standalone private method
                     product = createCameraProduct();
                     break;
                 case "2":
-                    //move it to the standalone private method
                     product = createShoesProduct();
                     break;
                 default:
                     System.err.print("nonexistent product");
-                    //handle error here to prevent the npe
-                    break;
+                    System.exit(-1);
             }
-            product.setTitle(productTitle);
-            product.setPrice(productPrice);
+
+            product.setTitle(keyboard("title "));
+            product.setPrice(Double.parseDouble(keyboard("price ")));
             return product;
         } else {
             return createProduct();
@@ -95,6 +98,17 @@ public class Program {
         shoesProduct.setColour(colour);
         shoesProduct.setSize(size);
         return shoesProduct;
+    }
+
+    private Product findFromProductsBase() throws NonexistentProduct {
+        String name = keyboard("product name (from database) ");
+        for (Product productFromBase : allProducts) {
+            String result = productFromBase.getTitle();
+            if (name.equals(result)) {
+                return productFromBase;
+            }
+        }
+        throw new NonexistentProduct("product with name: " +  name + " not found!");
     }
 
 
@@ -134,6 +148,15 @@ public class Program {
         System.out.print(message + ": ");
         Scanner scan = new Scanner(System.in);
         return scan.next();
+    }
+
+    private void productsBase() {
+        Product product1 = new Product("nut", 450.90);
+        Product product2 = new Product("orange", 253.50);
+        Product product3 = new Product("apple", 99.90);
+        Product product4 = new Product("beans", 59.0);
+        Product product5 = new Product("soy", 185.55);
+        allProducts.addAll(Arrays.asList(product1, product2, product3, product4, product5));
     }
 }
 
