@@ -1,17 +1,20 @@
 package com.marry.productsDeal;
 
 import com.marry.productsDeal.entities.*;
+import com.marry.productsDeal.exceptions.NonExistingProductException;
+import com.marry.productsDeal.repository.ProductRepository;
 
 import java.util.*;
 
 public class Program {
 
     private Deal deal;
-    private List<Product> allProducts = new LinkedList<>();
+    private ProductRepository productRepository = new ProductRepository();
+
 
     public static void main(String[] args) {
         Program program = new Program();
-        program.productsBase();
+        program.productRepository.findAll();
         program.run();
     }
 
@@ -37,7 +40,8 @@ public class Program {
 
         while (checkCondition("input products?")) {
             Product product = inputProduct();
-            allProducts.add(product);
+            productRepository.findAll().add(product);
+
             int quantity = Integer.parseInt(keyboard("quantity of product "));
             deal.getProducts().put(product, quantity);
         }
@@ -49,12 +53,12 @@ public class Program {
     }
 
     private Product inputProduct() {
-        while (checkCondition("do you want to choose products from data base?")) {
+        if (checkCondition("do you want to choose products from data base?")) {
             Product fromBase = null;
             try {
-                fromBase = findFromProductsBase();
-            } catch (NonexistentProduct nonexistentProduct) {
-                nonexistentProduct.printStackTrace();
+                fromBase = productRepository.findOneFromBase(keyboard("product name is: "));
+            } catch (NonExistingProductException e) {
+                e.printStackTrace();
             }
             return fromBase;
         }
@@ -100,18 +104,6 @@ public class Program {
         return shoesProduct;
     }
 
-    private Product findFromProductsBase() throws NonexistentProduct {
-        String name = keyboard("product name (from database) ");
-        for (Product productFromBase : allProducts) {
-            String result = productFromBase.getTitle();
-            if (name.equals(result)) {
-                return productFromBase;
-            }
-        }
-        throw new NonexistentProduct("product with name: " +  name + " not found!");
-    }
-
-
     private Product createProduct() {
         System.out.println("please, create product yourself");
         String title = keyboard("input product title ");
@@ -150,13 +142,6 @@ public class Program {
         return scan.next();
     }
 
-    private void productsBase() {
-        Product product1 = new Product("nut", 450.90);
-        Product product2 = new Product("orange", 253.50);
-        Product product3 = new Product("apple", 99.90);
-        Product product4 = new Product("beans", 59.0);
-        Product product5 = new Product("soy", 185.55);
-        allProducts.addAll(Arrays.asList(product1, product2, product3, product4, product5));
-    }
+
 }
 

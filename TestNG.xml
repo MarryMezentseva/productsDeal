@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="HTML based ProductRepository tests results" >
+
+    <test name="Products finding scenario">
+        <classes>
+            <class name="com.marry.productsDeal.repository.ProductFindingScenarioIT" />
+        </classes>
+    </test>
+
+</suite>
