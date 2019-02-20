@@ -56,7 +56,7 @@ public class Program {
         if (checkCondition("do you want to choose products from data base?")) {
             Product fromBase = null;
             try {
-                fromBase = productRepository.findOneFromBase(keyboard("product name is: "));
+                fromBase = productRepository.findByName(keyboard("product name is: "));
             } catch (NonExistingProductException e) {
                 e.printStackTrace();
             }
