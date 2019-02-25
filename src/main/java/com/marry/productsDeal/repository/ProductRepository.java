@@ -2,48 +2,21 @@ package com.marry.productsDeal.repository;
 
 import com.marry.productsDeal.entities.Product;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
+import com.marry.productsDeal.utils.CsvProductReader;
 
 import java.util.*;
 
-//         1) создать метод  public Product  create(Product p) он просто добавляет в кол. продукт и возвращает его же.
-// После этого все создаия продуктов делать через него.
-//        2) создать метод такой же как с сортировкой по имени, но реализовать его еще таким образом,
-// чтобы он сортировал по имени (как и было), но еще и по цене.
-// Те когда встречаются одиннаковые имена продуктов, для компаратора они равны =>
-// он их расположит как попало. Так вот нужно в этом случае досортировать по цене.
-// Подсказка: нужно чуть подправить существующий компаратор.
-//        3) создать метод кот найдет самый дорогой продукт
-//        4)создать метод кот найдет самый дешевый продукт
-//        5) написать на это все тесты
 public class ProductRepository {
 
-    private List<Product> productList = new LinkedList<>();
+    private List<Product> productList;
 
     public ProductRepository() {
-        createBase();
+        this.productList = createBase();
     }
 
     public List<Product> createBase() {
-        create(new Product("nut", 450.90));
-        create(new Product("orange", 253.50));
-        create(new Product("apple", 9.90));
-        create(new Product("beans", 59.0));
-        create(new Product("nut", 280.15));
-        create(new Product("soy", 185.55));
-        create(new Product("orange", 39.90));
-        create(new Product("orange", 39.00));
-        create(new Product("orange", 43.50));
-        create(new Product("nut", 290.85));
-        create(new Product("orange", 45.00));
-        create(new Product("apple", 10.89));
-        create(new Product("soy", 200.90));
-        create(new Product("orange", 39.49));
-        create(new Product("apple", 15.00));
-        create(new Product("apple", 8.50));
-        create(new Product("soy", 179.99));
-        create(new Product("orange", 40.00));
-        create(new Product("apple", 4.99));
-        create(new Product("nut", 450.00));
+        CsvProductReader csvProductReader = new CsvProductReader("productList.csv");
+        List<Product> productList = csvProductReader.read();
         return productList;
     }
 
@@ -54,6 +27,10 @@ public class ProductRepository {
 
     public List<Product> findAll() {
         return productList;
+    }
+
+    public void deleteAll() {
+        productList.clear();
     }
 
     public Product findByName(String name) throws NonExistingProductException {
@@ -70,7 +47,7 @@ public class ProductRepository {
     public Product findByPrice(double price) throws NonExistingProductException {
 
         for (Product product : productList) {
-            double result = product.getPrice();
+            double result = product.getPrice();//inline it
             if (price == result) {
                 return product;
             }
@@ -78,24 +55,6 @@ public class ProductRepository {
         throw new NonExistingProductException("product with price: " + price + " not found!");
     }
 
-    public List<Product> findByNamesAndSort(String... names) {//to do contains
-        List<Product> sortedList = new ArrayList<>();
-        for (Product product : productList) {
-            String foundName = product.getTitle();
-            for (String n : names) {
-                if (n.equals(foundName)) {
-                    sortedList.add(product);
-                }
-            }
-        }
-        sortedList.sort(new Comparator<Product>() {
-            @Override
-            public int compare(Product o1, Product o2) {
-                return o1.getTitle().compareTo(o2.getTitle());
-            }
-        });
-        return sortedList;
-    }
 
     public List<Product> sortByPriceRange(double startPrice, double endPrice) {
         List<Product> listByPriceRange = new ArrayList<>();
@@ -108,17 +67,34 @@ public class ProductRepository {
         return listByPriceRange;
     }
 
-    public List<Product> sortByNameAndPrice(String... names) {
-        List<Product> sortedList = new ArrayList<>();
+    private List<Product> findByNames(String... names) {
+        List<Product> products = new ArrayList<>();
         for (Product product : productList) {
             String foundName = product.getTitle();
             for (String n : names) {
                 if (n.equals(foundName)) {
-                    sortedList.add(product);
+                    products.add(product);
                 }
             }
         }
-        sortedList.sort(new Comparator<Product>() {
+        return products;
+    }
+
+    public List<Product> findByNamesAndSort(String... names) {//to do contain
+        List<Product> products = findByNames(names);
+
+        products.sort(new Comparator<Product>() {
+            @Override
+            public int compare(Product o1, Product o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
+        return products;
+    }
+
+    public List<Product> findByNamesAndSortByNamesAndPrice(String... names) {
+        List<Product> products = findByNames(names);
+        products.sort(new Comparator<Product>() {
             @Override
             public int compare(Product o1, Product o2) {
                 int result = o1.getTitle().compareTo(o2.getTitle());
@@ -129,28 +105,66 @@ public class ProductRepository {
                 }
             }
         });
-        return sortedList;
+        return products;
     }
 
-    Product findByMaxPrice() {
-        Product productMaxPrice = new Product();
-        productMaxPrice.setPrice(Double.MIN_VALUE);
+    public Product findByMaxPrice() {
+        Product productMaxPrice = null;
         for (Product product : productList) {
-            if (product.getPrice() > productMaxPrice.getPrice()){
+            if (productMaxPrice == null) {
+                productMaxPrice = product;
+            }
+            if (product.getPrice() > productMaxPrice.getPrice()) {
                 productMaxPrice = product;
             }
         }
         return productMaxPrice;
     }
 
-    Product findByMinPrice() {
-        Product productMinPrice = new Product();
-        productMinPrice.setPrice(Double.MAX_VALUE);
+    public Product findByMinPrice() {
+        Product productMinPrice = null;
         for (Product product : productList) {
-            if (product.getPrice() < productMinPrice.getPrice()){
+            if (productMinPrice == null) {
+                productMinPrice = product;
+            }
+            if (product.getPrice() < productMinPrice.getPrice()) {
                 productMinPrice = product;
             }
         }
         return productMinPrice;
     }
+
+    public List<Product> find(Product example) {
+        String title = example.getTitle();
+        Double price = example.getPrice();
+        if (title == null && (price == null)){
+            throw new IllegalArgumentException("At least one parameter should be not null");
+        }
+
+        List<Product> products = new ArrayList<>();
+        for (Product product : productList) {
+            if (title != null && (!title.equals(product.getTitle()))) {
+                continue;
+            }
+
+            if (price != null && (!price.equals(product.getPrice()))) {
+                continue;
+            }
+
+            products.add(product);
+        }
+        return products;
+    }
+
 }
+//Создать метод List<Product> findByExample(Product example)
+//Ты можешь передать продукт с любыми заполнеными полями (example). Метод ищет продукты, которые
+//совпадают с установленными полями в example
+//Как это делать:
+//если поле null - его не учитываем при поиске.
+//если все поля установлены - учитываем при поиске все
+//найти все продукты, которые соответствуют Product example
+//если передаваемый продукт содержит оба поля не null, то искать все с такими title и price
+//если передаваемый продукт содержит оба поле title и price == null тогда искать все только по title
+//если передаваемый продукт содержит оба поле price и title== null тогда искать все только по price
+//если все поля null слать с эксепшеном

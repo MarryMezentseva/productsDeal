@@ -33,15 +33,28 @@ public class ProductFindingScenarioIT {
     }
 
     @Test
-    public void testFindByNamesAndSort() {
-        final String NAME_1 = "apple";
-        final String NAME_2 = "orange";
-        List<Product> productList = productRepository.findByNamesAndSort(NAME_1, NAME_2);
-        for (Product product : productList) {
-            assertEquals(productList.size(), 12);
-            assertEquals(productList.get(0).getTitle(), NAME_1);
-            assertEquals(productList.get(productList.size() - 1).getTitle(), NAME_2);
-        }
+    public void testFindProductsByNamesAndSort() {
+        //given
+        final String APPLE_NAME = "apple";
+        final String ORANGE_NAME = "orange";
+        productRepository.deleteAll();
+        productRepository.create(new Product(ORANGE_NAME, 75.0));
+        productRepository.create(new Product(APPLE_NAME, 25.0));
+        productRepository.create(new Product(ORANGE_NAME, 73.0));
+        productRepository.create(new Product(ORANGE_NAME, 77.0));
+        productRepository.create(new Product(APPLE_NAME, 15.0));
+        productRepository.create(new Product("unknown product1", 737.0));
+        productRepository.create(new Product("unknown product2", 153.0));
+        //when
+        List<Product> productList = productRepository.findByNamesAndSort(APPLE_NAME, ORANGE_NAME);
+        //then
+        assertEquals(productList.size(), 5);
+        assertEquals(productList.get(0).getTitle(), APPLE_NAME);
+        assertEquals(productList.get(1).getTitle(), APPLE_NAME);
+        assertEquals(productList.get(2).getTitle(), ORANGE_NAME);
+        assertEquals(productList.get(3).getTitle(), ORANGE_NAME);
+        assertEquals(productList.get(4).getTitle(), ORANGE_NAME);
+
     }
 
     @Test
@@ -51,27 +64,65 @@ public class ProductFindingScenarioIT {
         List<Product> productList = productRepository.sortByPriceRange(START_PRICE, END_PRICE);
         for (Product product : productList) {
             double price = product.getPrice();
-            boolean result = (price <= END_PRICE) && (price >= START_PRICE);
-            assertTrue(result);
+            assertTrue((price <= END_PRICE) && (price >= START_PRICE));
         }
     }
 
     @Test
-    public void testSortByNameAndPrice() {
-        final String NAME_1 = "nut";
-        final String NAME_2 = "soy";
-        List<Product> productList = productRepository.sortByNameAndPrice(NAME_1, NAME_2);
-        for (Product product : productList) {
-            assertEquals(productList.size(), 7);
-            assertEquals(productList.get(0).getTitle(), NAME_1);
-            boolean result = productList.get(0).getPrice() < productList.get(1).getPrice();
-            assertTrue(result);
-            assertEquals(productList.get(productList.size() - 1).getTitle(), NAME_2);
-            boolean result1 = productList.get(productList.size() - 2).getPrice() <
-                    productList.get(productList.size() - 1).getPrice();
-            assertTrue(result1);
-        }
+    public void testFindProductsByNamesByPrice() {
+        //given
+        final String APPLE_NAME = "apple";
+        final String ORANGE_NAME = "orange";
+        productRepository.deleteAll();
+        productRepository.create(new Product(ORANGE_NAME, 75.0));
+        productRepository.create(new Product(APPLE_NAME, 25.0));
+        productRepository.create(new Product(ORANGE_NAME, 73.0));
+        productRepository.create(new Product(ORANGE_NAME, 77.0));
+        productRepository.create(new Product(APPLE_NAME, 15.0));
+        productRepository.create(new Product(ORANGE_NAME, 75.10));
+        productRepository.create(new Product(APPLE_NAME, 25.10));
+        productRepository.create(new Product(ORANGE_NAME, 73.10));
+        productRepository.create(new Product(ORANGE_NAME, 77.10));
+        productRepository.create(new Product(APPLE_NAME, 15.10));
+        productRepository.create(new Product("unknown product1", 737.0));
+        productRepository.create(new Product("unknown product2", 153.0));
+        //when
+        List<Product> productList = productRepository.findByNamesAndSortByNamesAndPrice(APPLE_NAME, ORANGE_NAME);
+        //then
+        assertEquals(productList.size(), 10);
+
+        assertEquals(productList.get(0).getTitle(), APPLE_NAME);
+        assertEquals(productList.get(0).getPrice(), 15.0);
+
+        assertEquals(productList.get(1).getTitle(), APPLE_NAME);
+        assertEquals(productList.get(1).getPrice(), 15.10);
+
+        assertEquals(productList.get(2).getTitle(), APPLE_NAME);
+        assertEquals(productList.get(2).getPrice(), 25.0);
+
+        assertEquals(productList.get(3).getTitle(), APPLE_NAME);
+        assertEquals(productList.get(3).getPrice(), 25.10);
+
+        assertEquals(productList.get(4).getTitle(), ORANGE_NAME);
+        assertEquals(productList.get(4).getPrice(), 73.0);
+
+        assertEquals(productList.get(5).getTitle(), ORANGE_NAME);
+        assertEquals(productList.get(5).getPrice(), 73.10);
+
+        assertEquals(productList.get(6).getTitle(), ORANGE_NAME);
+        assertEquals(productList.get(6).getPrice(), 75.0);
+
+        assertEquals(productList.get(7).getTitle(), ORANGE_NAME);
+        assertEquals(productList.get(7).getPrice(), 75.10);
+
+        assertEquals(productList.get(8).getTitle(), ORANGE_NAME);
+        assertEquals(productList.get(8).getPrice(), 77.0);
+
+        assertEquals(productList.get(9).getTitle(), ORANGE_NAME);
+        assertEquals(productList.get(9).getPrice(), 77.1);
+
     }
+
 
     @Test
     public void testFindByMaxPrice() {
@@ -91,6 +142,58 @@ public class ProductFindingScenarioIT {
     @Test(expectedExceptions = NonExistingProductException.class)
     public void negativeTestFindOneByPrice() {
         productRepository.findByPrice(Double.MIN_VALUE);
+    }
+
+    //********************************************************
+    @Test
+    public void findProd_1() {
+        //given
+        //-fill up DB
+        productRepository.findAll().clear();
+        Product example = new Product();
+        example.setTitle("werf");
+
+
+        //when
+        List<Product> list = productRepository.find(example);
+
+        //then
+        //-verify list
+
+    }
+
+    @Test
+    public void findProd_2() {
+        //given
+        //-fill up DB
+        //when
+        //  List<Product> list = productRepository.find(null, 3.0, null,null);
+        //then
+        //-verify list
+
+    }
+
+
+    @Test
+    public void findProd_3() {
+        //given
+        //-fill up DB
+        //when
+        //  List<Product> list = productRepository.find("orange", null, null,true);
+        //then
+        //-verify list
+
+    }
+
+    @Test
+    public void findProd_4() {
+        //given
+        //-fill up DB
+        //when
+        //  List<Product> list = productRepository.find(null, 5.0, "good product",true);
+        //then
+        //-verify list
+
     }
 
 }

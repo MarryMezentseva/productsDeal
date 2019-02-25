@@ -3,9 +3,10 @@ package com.marry.productsDeal.entities;
 public class Product {
     public static final int DEF_DSCNT = 10;
     private String title;
-    private double price;
+    private Double price;
 
-    public Product(String title, double price) {
+
+    public Product(String title, Double price) {
         this.title = title;
         this.price = price;
     }
@@ -34,12 +35,20 @@ public class Product {
         this.title = title;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "title='" + title + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
 

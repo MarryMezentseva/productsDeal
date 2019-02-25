@@ -14,7 +14,7 @@ public class Program {
 
     public static void main(String[] args) {
         Program program = new Program();
-        program.productRepository.findAll();
+        program.productRepository.findAll();//remove it
         program.run();
     }
 
@@ -40,7 +40,7 @@ public class Program {
 
         while (checkCondition("input products?")) {
             Product product = inputProduct();
-            productRepository.findAll().add(product);
+            productRepository.createBase();
 
             int quantity = Integer.parseInt(keyboard("quantity of product "));
             deal.getProducts().put(product, quantity);
