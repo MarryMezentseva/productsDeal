@@ -4,6 +4,7 @@ import com.marry.productsDeal.entities.*;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
 import com.marry.productsDeal.repository.ProductRepository;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Program {
@@ -11,14 +12,17 @@ public class Program {
     private Deal deal;
     private ProductRepository productRepository = new ProductRepository();
 
+    public Program() throws IOException {
+    }
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws IOException {
         Program program = new Program();
         program.productRepository.findAll();//remove it
         program.run();
     }
 
-    private void run() {
+    private void run() throws IOException {
         deal = inputDeal();
         printDeal();
     }
@@ -28,7 +32,7 @@ public class Program {
         return "y".compareToIgnoreCase(answer) == 0;
     }
 
-    private Deal inputDeal() {
+    private Deal inputDeal() throws IOException {
 
         System.out.println("input buyer -> ");
         User buyer = inputUser();

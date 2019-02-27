@@ -4,6 +4,7 @@ import com.marry.productsDeal.entities.Product;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
 import org.testng.annotations.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -13,8 +14,14 @@ public class ProductFindingScenarioIT {
     ProductRepository productRepository;
 
     @BeforeClass
-    public void init() {
+    public void init() throws IOException {
         productRepository = new ProductRepository();
+    }
+
+    @BeforeMethod
+    public void createProductBase() throws IOException {
+        productRepository.deleteAll();
+        productRepository.createBase();
     }
 
     @Test
@@ -127,6 +134,7 @@ public class ProductFindingScenarioIT {
     @Test
     public void testFindByMaxPrice() {
         assertEquals(productRepository.findByMaxPrice().getPrice(), 450.90);
+        System.out.println();
     }
 
     @Test
@@ -146,54 +154,87 @@ public class ProductFindingScenarioIT {
 
     //********************************************************
     @Test
-    public void findProd_1() {
+    public void findProd_name_price() {
         //given
         //-fill up DB
-        productRepository.findAll().clear();
-        Product example = new Product();
-        example.setTitle("werf");
-
+        productRepository.deleteAll();
+        productRepository.create(new Product("aaa", 10.0));
+        productRepository.create(new Product("bbb", 20.0));
+        productRepository.create(new Product("ccc", 30.0));
+        productRepository.create(new Product("aaa", 30.0));
+        productRepository.create(new Product("bbb", 10.0));
+        productRepository.create(new Product("ccc", 10.0));
+        productRepository.create(new Product("aaa", 10.0));
+        productRepository.create(new Product("bbb", 20.0));
+        productRepository.create(new Product("ccc", 30.0));
 
         //when
-        List<Product> list = productRepository.find(example);
-
+        List<Product> list = productRepository.find(new Product("bbb", 20.0));
         //then
         //-verify list
-
+        assertEquals(list.size(), 2);
     }
 
     @Test
-    public void findProd_2() {
+    public void findProd_name() {
         //given
         //-fill up DB
+        productRepository.deleteAll();
+        productRepository.create(new Product("aaa", 10.0));
+        productRepository.create(new Product("bbb", 20.0));
+        productRepository.create(new Product("ccc", 30.0));
+        productRepository.create(new Product("aaa", 30.0));
+        productRepository.create(new Product("bbb", 10.0));
+        productRepository.create(new Product("ccc", 10.0));
+        productRepository.create(new Product("aaa", 10.0));
+        productRepository.create(new Product("bbb", 20.0));
+        productRepository.create(new Product("ccc", 30.0));
+
         //when
-        //  List<Product> list = productRepository.find(null, 3.0, null,null);
+        List<Product> list = productRepository.find(new Product("bbb", null));
         //then
         //-verify list
-
+        assertEquals(list.size(), 3);
     }
 
 
     @Test
-    public void findProd_3() {
+    public void findProd_price() {
         //given
         //-fill up DB
+        productRepository.deleteAll();
+        productRepository.create(new Product("aaa", 10.0));
+        productRepository.create(new Product("bbb", 20.0));
+        productRepository.create(new Product("ccc", 30.0));
+        productRepository.create(new Product("aaa", 30.0));
+        productRepository.create(new Product("bbb", 10.0));
+        productRepository.create(new Product("ccc", 10.0));
+        productRepository.create(new Product("aaa", 10.0));
+        productRepository.create(new Product("bbb", 20.0));
+        productRepository.create(new Product("ccc", 30.0));
         //when
-        //  List<Product> list = productRepository.find("orange", null, null,true);
+        List<Product> list = productRepository.find(new Product(null, 10.0));
         //then
         //-verify list
-
+        assertEquals(list.size(), 4);
     }
 
-    @Test
-    public void findProd_4() {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void negativeFindProd() {
         //given
         //-fill up DB
+        productRepository.deleteAll();
+        productRepository.create(new Product("aaa", 10.0));
+        productRepository.create(new Product("bbb", 20.0));
+        productRepository.create(new Product("ccc", 30.0));
+        productRepository.create(new Product("aaa", 30.0));
+        productRepository.create(new Product("bbb", 10.0));
+        productRepository.create(new Product("ccc", 10.0));
+        productRepository.create(new Product("aaa", 10.0));
+        productRepository.create(new Product("bbb", 20.0));
+        productRepository.create(new Product("ccc", 30.0));
         //when
-        //  List<Product> list = productRepository.find(null, 5.0, "good product",true);
-        //then
-        //-verify list
-
+        List<Product> list = productRepository.find(new Product(null, null));
+        //expect exception
     }
-
 }

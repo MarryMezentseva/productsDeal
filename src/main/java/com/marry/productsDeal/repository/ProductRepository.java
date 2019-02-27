@@ -3,20 +3,35 @@ package com.marry.productsDeal.repository;
 import com.marry.productsDeal.entities.Product;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
 import com.marry.productsDeal.utils.CsvProductReader;
+import com.marry.productsDeal.utils.JsonProductReader;
+import com.marry.productsDeal.utils.XmlProductReader;
 
+import java.io.IOException;
 import java.util.*;
 
 public class ProductRepository {
 
     private List<Product> productList;
 
-    public ProductRepository() {
+    public ProductRepository() throws IOException {
         this.productList = createBase();
     }
 
-    public List<Product> createBase() {
-        CsvProductReader csvProductReader = new CsvProductReader("productList.csv");
-        List<Product> productList = csvProductReader.read();
+//    public List<Product> createBase() {
+//        CsvProductReader csvProductReader = new CsvProductReader("productList.csv");
+//        List<Product> productList = csvProductReader.read();
+//        return productList;
+//    }
+
+//    public List<Product> createBase() {
+//        XmlProductReader xmlProductReader = new XmlProductReader("productList.xml");
+//        List<Product> productList = xmlProductReader.read();
+//        return productList;
+//    }
+
+    public List<Product> createBase() throws IOException {
+        JsonProductReader jsonProductReader = new JsonProductReader("productList.json");
+        List<Product> productList = jsonProductReader.read();
         return productList;
     }
 
@@ -157,14 +172,3 @@ public class ProductRepository {
     }
 
 }
-//Создать метод List<Product> findByExample(Product example)
-//Ты можешь передать продукт с любыми заполнеными полями (example). Метод ищет продукты, которые
-//совпадают с установленными полями в example
-//Как это делать:
-//если поле null - его не учитываем при поиске.
-//если все поля установлены - учитываем при поиске все
-//найти все продукты, которые соответствуют Product example
-//если передаваемый продукт содержит оба поля не null, то искать все с такими title и price
-//если передаваемый продукт содержит оба поле title и price == null тогда искать все только по title
-//если передаваемый продукт содержит оба поле price и title== null тогда искать все только по price
-//если все поля null слать с эксепшеном
