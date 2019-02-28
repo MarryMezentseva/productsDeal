@@ -13,7 +13,7 @@ public class ProductRepository {
 
     private List<Product> productList;
 
-    public ProductRepository() throws IOException {
+    public ProductRepository() {
         this.productList = createBase();
     }
 
@@ -29,7 +29,7 @@ public class ProductRepository {
 //        return productList;
 //    }
 
-    public List<Product> createBase() throws IOException {
+    public List<Product> createBase()  {
         JsonProductReader jsonProductReader = new JsonProductReader("productList.json");
         List<Product> productList = jsonProductReader.read();
         return productList;

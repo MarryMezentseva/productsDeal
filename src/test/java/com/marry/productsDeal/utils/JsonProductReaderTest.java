@@ -11,7 +11,7 @@ import static org.testng.Assert.*;
 public class JsonProductReaderTest {
 
     @Test
-    public void testReadByJson() throws IOException {
+    public void testReadByJson()  {
         JsonProductReader jsonProductReader = new JsonProductReader("productList.json");
         List<Product> productList = jsonProductReader.read();
         assertTrue(productList.size() > 1);

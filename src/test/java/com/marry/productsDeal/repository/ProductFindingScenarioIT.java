@@ -14,14 +14,33 @@ public class ProductFindingScenarioIT {
     ProductRepository productRepository;
 
     @BeforeClass
-    public void init() throws IOException {
+    public void init() {
         productRepository = new ProductRepository();
     }
 
     @BeforeMethod
-    public void createProductBase() throws IOException {
+    public void createProductBase() {
         productRepository.deleteAll();
-        productRepository.createBase();
+        productRepository.create(new Product("nut", 450.90));
+        productRepository.create(new Product("orange", 253.50));
+        productRepository.create(new Product("apple", 9.90));
+        productRepository.create(new Product("beans", 59.0));
+        productRepository.create(new Product("nut", 280.15));
+        productRepository.create(new Product("soy", 185.55));
+        productRepository.create(new Product("orange", 39.90));
+        productRepository.create(new Product("orange", 39.00));
+        productRepository.create(new Product("orange", 43.50));
+        productRepository.create(new Product("nut", 290.85));
+        productRepository.create(new Product("orange", 45.0));
+        productRepository.create(new Product("apple", 10.89));
+        productRepository.create(new Product("soy", 200.90));
+        productRepository.create(new Product("orange", 39.49));
+        productRepository.create(new Product("apple", 15.00));
+        productRepository.create(new Product("apple", 8.50));
+        productRepository.create(new Product("soy", 179.99));
+        productRepository.create(new Product("orange", 40.00));
+        productRepository.create(new Product("apple", 4.99));
+        productRepository.create(new Product("nut", 450.00));
     }
 
     @Test

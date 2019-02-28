@@ -14,10 +14,14 @@ import static org.testng.Assert.*;
 public class XmlProductReaderTest {
 
     @Test
-    public void testRead() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+    public void testRead() {
         XmlProductReader xmlProductReader = new XmlProductReader("productList.xml");
-        List<Product> productList = xmlProductReader.read();
+        List<Product> productList = null;
+        try {
+            productList = xmlProductReader.read();
+        } catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
+        }
         assertTrue(productList.size() > 1);
-        System.out.println();
     }
 }

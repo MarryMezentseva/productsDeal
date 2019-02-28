@@ -12,17 +12,17 @@ public class Program {
     private Deal deal;
     private ProductRepository productRepository = new ProductRepository();
 
-    public Program() throws IOException {
+    public Program() {
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Program program = new Program();
         program.productRepository.findAll();//remove it
         program.run();
     }
 
-    private void run() throws IOException {
+    private void run()  {
         deal = inputDeal();
         printDeal();
     }
@@ -32,7 +32,7 @@ public class Program {
         return "y".compareToIgnoreCase(answer) == 0;
     }
 
-    private Deal inputDeal() throws IOException {
+    private Deal inputDeal() {
 
         System.out.println("input buyer -> ");
         User buyer = inputUser();
