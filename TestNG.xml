@@ -3,7 +3,7 @@
 
     <test name="Products finding scenario">
         <classes>
-            <class name="com.marry.productsDeal.repository.ProductFindingScenarioIT" />
+            <class name="com.marry.productsDeal.repository.ProductsFinding" />
         </classes>
     </test>
 

@@ -4,13 +4,12 @@ import com.marry.productsDeal.entities.Product;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
 import org.testng.annotations.*;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.testng.Assert.*;
 
 //format code
-public class ProductFindingScenarioIT {
+public class ProductsFinding {
     ProductRepository productRepository;
 
     @BeforeClass

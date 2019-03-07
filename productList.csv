@@ -1,21 +1,21 @@
-Title,Price
-nut,450.90
-orange,253.50
-apple,9.90
-beans,59.0
-nut,280.15
-soy,185.55
-orange,39.90
-orange,39.00
-orange,43.50
-nut,290.85
-orange,45.0
-apple,10.89
-soy,200.90
-orange,39.49
-apple,15.00
-apple,8.50
-soy,179.99
-orange,40.00
-apple,4.99
-nut,450.00
+products
+nut, 450.90
+orange, 253.50
+apple, 9.90
+beans, 59.0
+nut, 280.15
+soy, 185.55
+orange, 39.90
+orange, 39.00
+orange, 43.50
+nut, 290.85
+orange, 45.0
+apple, 10.89
+soy, 200.90
+orange, 39.49
+apple, 15.00
+apple, 8.50
+soy, 179.99
+orange, 40.00
+apple, 4.99
+nut, 450.00

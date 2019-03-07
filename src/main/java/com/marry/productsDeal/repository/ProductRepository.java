@@ -3,6 +3,7 @@ package com.marry.productsDeal.repository;
 import com.marry.productsDeal.entities.Product;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
 import com.marry.productsDeal.utils.CsvProductReader;
+import com.marry.productsDeal.utils.DBProductReader;
 import com.marry.productsDeal.utils.JsonProductReader;
 import com.marry.productsDeal.utils.XmlProductReader;
 
@@ -29,9 +30,15 @@ public class ProductRepository {
 //        return productList;
 //    }
 
-    public List<Product> createBase()  {
-        JsonProductReader jsonProductReader = new JsonProductReader("productList.json");
-        List<Product> productList = jsonProductReader.read();
+//    public List<Product> createBase()  {
+//        JsonProductReader jsonProductReader = new JsonProductReader("productList.json");
+//        List<Product> productList = jsonProductReader.read();
+//        return productList;
+//    }
+
+    public List<Product> createBase(){
+        DBProductReader dbProductReader = new DBProductReader();
+        List<Product> productList = dbProductReader.read();
         return productList;
     }
 

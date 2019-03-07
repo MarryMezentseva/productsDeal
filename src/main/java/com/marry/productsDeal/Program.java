@@ -4,7 +4,6 @@ import com.marry.productsDeal.entities.*;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
 import com.marry.productsDeal.repository.ProductRepository;
 
-import java.io.IOException;
 import java.util.*;
 
 public class Program {
