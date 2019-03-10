@@ -9,15 +9,16 @@ import java.util.List;
 
 public class DBProductReader {
 
+    //looks fine, but next step is to read all following from .property file
     private static final String DB_PORT = "5432";
     private static final String DB_DB_NAME = "productsDB";
     private static final String DB_DRIVER = "org.postgresql.Driver";
     private static final String DB_CONNECTION = "jdbc:postgresql://localhost:" + DB_PORT + "/" + DB_DB_NAME;
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "password";
-    private Connection connection = null;
-    private Statement statement = null;
-    private ResultSet resultSet = null;
+    private Connection connection = null;// convert it to a local variable
+    private Statement statement = null;// convert it to a local variable
+    private ResultSet resultSet = null;// convert it to a local variable
 
     public List<Product> read() {
         List<Product> productList = new ArrayList<>();
@@ -27,7 +28,7 @@ public class DBProductReader {
             e.printStackTrace();
         }
         try {
-            connection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);// create standalone method that returns connection: Connection getConnection()
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM public.products");
             while (resultSet.next()) {
@@ -41,10 +42,10 @@ public class DBProductReader {
         } finally {
             try {
                 if (connection != null) {
-                    connection.close();
+                    connection.close();//if exception trows here, statement and resultSet objects will stuck in the memory and will never be closed. Create separate try/catch statements
                 }
                 if (statement != null) {
-                    statement.close();
+                    statement.close();//same here
                 }
                 if (resultSet != null) {
                     resultSet.close();

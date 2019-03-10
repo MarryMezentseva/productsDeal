@@ -38,8 +38,7 @@ public class ProductRepository {
 
     public List<Product> createBase(){
         DBProductReader dbProductReader = new DBProductReader();
-        List<Product> productList = dbProductReader.read();
-        return productList;
+        return dbProductReader.read();
     }
 
     public Product create(Product product) {
