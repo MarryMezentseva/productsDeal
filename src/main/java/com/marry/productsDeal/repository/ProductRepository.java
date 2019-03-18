@@ -2,44 +2,20 @@ package com.marry.productsDeal.repository;
 
 import com.marry.productsDeal.entities.Product;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
-import com.marry.productsDeal.utils.CsvProductReader;
-import com.marry.productsDeal.utils.DBProductReader;
-import com.marry.productsDeal.utils.JsonProductReader;
-import com.marry.productsDeal.utils.XmlProductReader;
+import com.marry.productsDeal.utils.ProductsReader;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class ProductRepository {
 
     private List<Product> productList;
 
-    public ProductRepository() {
-        this.productList = createBase();
+    public ProductRepository(ProductsReader reader) {
+            this.productList = reader.read();
     }
 
-//    public List<Product> createBase() {
-//        CsvProductReader csvProductReader = new CsvProductReader("productList.csv");
-//        List<Product> productList = csvProductReader.read();
-//        return productList;
-//    }
-
-//    public List<Product> createBase() {
-//        XmlProductReader xmlProductReader = new XmlProductReader("productList.xml");
-//        List<Product> productList = xmlProductReader.read();
-//        return productList;
-//    }
-
-//    public List<Product> createBase()  {
-//        JsonProductReader jsonProductReader = new JsonProductReader("productList.json");
-//        List<Product> productList = jsonProductReader.read();
-//        return productList;
-//    }
-
-    public List<Product> createBase(){
-        DBProductReader dbProductReader = new DBProductReader();
-        return dbProductReader.read();
-    }
 
     public Product create(Product product) {
         productList.add(product);

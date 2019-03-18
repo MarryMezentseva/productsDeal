@@ -2,44 +2,27 @@ package com.marry.productsDeal.repository;
 
 import com.marry.productsDeal.entities.Product;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
-import org.testng.annotations.*;
+import com.marry.productsDeal.utils.CsvProductReader;
+import com.marry.productsDeal.utils.ProductsReader;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
 
-//format code
 public class ProductsFinding {
     ProductRepository productRepository;
 
-    @BeforeClass
-    public void init() {
-        productRepository = new ProductRepository();
-    }
-
     @BeforeMethod
-    public void createProductBase() {
-        productRepository.deleteAll();
-        productRepository.create(new Product("nut", 450.90));
-        productRepository.create(new Product("orange", 253.50));
-        productRepository.create(new Product("apple", 9.90));
-        productRepository.create(new Product("beans", 59.0));
-        productRepository.create(new Product("nut", 280.15));
-        productRepository.create(new Product("soy", 185.55));
-        productRepository.create(new Product("orange", 39.90));
-        productRepository.create(new Product("orange", 39.00));
-        productRepository.create(new Product("orange", 43.50));
-        productRepository.create(new Product("nut", 290.85));
-        productRepository.create(new Product("orange", 45.0));
-        productRepository.create(new Product("apple", 10.89));
-        productRepository.create(new Product("soy", 200.90));
-        productRepository.create(new Product("orange", 39.49));
-        productRepository.create(new Product("apple", 15.00));
-        productRepository.create(new Product("apple", 8.50));
-        productRepository.create(new Product("soy", 179.99));
-        productRepository.create(new Product("orange", 40.00));
-        productRepository.create(new Product("apple", 4.99));
-        productRepository.create(new Product("nut", 450.00));
+    public void init(){
+        ProductsReader reader = new CsvProductReader("productList.csv");
+        productRepository = new ProductRepository(reader);
+        List<Product> productList = reader.read();
+        assertEquals(productList.size(), 20);
+        System.out.println();
     }
 
     @Test

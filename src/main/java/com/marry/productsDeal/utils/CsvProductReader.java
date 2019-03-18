@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CsvProductReader {
+public class CsvProductReader implements ProductsReader {
     private String path;
 
     public CsvProductReader(String path) {

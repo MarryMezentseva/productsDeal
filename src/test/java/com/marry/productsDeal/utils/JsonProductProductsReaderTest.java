@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.testng.Assert.*;
 
-public class JsonProductReaderTest {
+public class JsonProductProductsReaderTest {
 
     @Test
     public void testReadByJson()  {

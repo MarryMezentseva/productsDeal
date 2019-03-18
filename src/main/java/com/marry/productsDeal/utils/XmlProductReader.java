@@ -14,29 +14,56 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XmlProductReader {
+public class XmlProductReader implements ProductsReader{
     private String path;
 
     public XmlProductReader(String path){
         this.path = path;
     }
 
-    public List<Product> read() throws XPathExpressionException, IOException, SAXException, ParserConfigurationException {
+    public List<Product> read() {
         List<Product> productList = new ArrayList<>();
 
         //Build DOM
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true); // never forget this!
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(path);
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        Document doc = null;
+        try {
+            if (builder != null) {
+                doc = builder.parse(path);
+            }
+        } catch (SAXException | IOException e) {
+            e.printStackTrace();
+        }
 
         //Create XPath
         XPathFactory xpathfactory = XPathFactory.newInstance();
         XPath xpath = xpathfactory.newXPath();
-        XPathExpression expr = xpath.compile("//application/products");
+        XPathExpression expr = null;
+        try {
+            expr = xpath.compile("//application/products");
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
 
-        Object productsObject = expr.evaluate(doc, XPathConstants.NODE);
-        NodeList nodes = ((Node)productsObject).getChildNodes();
+        Object productsObject = null;
+        try {
+            if (expr != null) {
+                productsObject = expr.evaluate(doc, XPathConstants.NODE);
+            }
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+        NodeList nodes = null;
+        if (productsObject != null) {
+            nodes = ((Node)productsObject).getChildNodes();
+        }
         for (int i = 0; i < nodes.getLength(); i++){
             if (nodes.item(i) instanceof Element){
                 Element productElement = (Element)(nodes.item(i));

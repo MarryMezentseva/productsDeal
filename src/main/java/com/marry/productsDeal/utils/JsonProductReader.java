@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonProductReader {
+public class JsonProductReader implements ProductsReader{
     private String path;
 
     public JsonProductReader(String path) {

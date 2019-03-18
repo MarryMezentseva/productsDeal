@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.testng.Assert.*;
 
-public class CsvProductReaderTest {
+public class CsvProductProductsReaderTest {
 
     @Test
     public void testRead() {

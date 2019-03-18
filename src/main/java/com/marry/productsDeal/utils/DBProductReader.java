@@ -2,37 +2,68 @@ package com.marry.productsDeal.utils;
 
 import com.marry.productsDeal.entities.Product;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 
-public class DBProductReader {
+public class DBProductReader implements ProductsReader {
+    private String dbConnection;
+    private String dbDriver;
+    private String dbUser;
+    private String dbPassword;
+    private Connection connection;
+    private FileInputStream fis;
 
-    //looks fine, but next step is to read all following from .property file
-    private static final String DB_PORT = "5432";
-    private static final String DB_DB_NAME = "productsDB";
-    private static final String DB_DRIVER = "org.postgresql.Driver";
-    private static final String DB_CONNECTION = "jdbc:postgresql://localhost:" + DB_PORT + "/" + DB_DB_NAME;
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "password";
-    private Connection connection = null;// convert it to a local variable
-    private Statement statement = null;// convert it to a local variable
-    private ResultSet resultSet = null;// convert it to a local variable
 
-    public List<Product> read() {
-        List<Product> productList = new ArrayList<>();
+    public DBProductReader(String filePath) {
+        Properties property = new Properties();
         try {
-            Class.forName(DB_DRIVER);
-        } catch (ClassNotFoundException e) {
+            fis = new FileInputStream(filePath);
+            property.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        dbConnection = property.getProperty("dbconnection");
+        dbDriver = property.getProperty("dbdriver");
+        dbUser = property.getProperty("dbuser");
+        dbPassword = property.getProperty("dbpassword");
+
+    }
+
+    public Connection getConnection() {
+        try {
+            connection = DriverManager.getConnection(dbConnection, dbUser, dbPassword);
+            Class.forName(dbDriver);
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return connection;
+    }
+
+    public List<Product> read() {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        List<Product> productList = new ArrayList<>();
+
         try {
-            connection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);// create standalone method that returns connection: Connection getConnection()
+            connection = getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM public.products");
             while (resultSet.next()) {
-                int id = Integer.parseInt(resultSet.getString("id"));
+                // int id = Integer.parseInt(resultSet.getString("id"));
                 String title = resultSet.getString("title");
                 double price = Double.parseDouble(resultSet.getString("price"));
                 productList.add(new Product(title, price));
@@ -40,19 +71,29 @@ public class DBProductReader {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (connection != null) {
-                    connection.close();//if exception trows here, statement and resultSet objects will stuck in the memory and will never be closed. Create separate try/catch statements
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-                if (statement != null) {
-                    statement.close();//same here
-                }
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+//
         }
         return productList;
     }

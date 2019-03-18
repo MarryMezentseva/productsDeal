@@ -1,27 +1,63 @@
 package com.marry.productsDeal;
 
+import com.marry.productsDeal.readerFactory.FileType;
+import com.marry.productsDeal.readerFactory.ReaderFactory;
 import com.marry.productsDeal.entities.*;
 import com.marry.productsDeal.exceptions.NonExistingProductException;
 import com.marry.productsDeal.repository.ProductRepository;
+import com.marry.productsDeal.utils.*;
+import org.apache.commons.io.FilenameUtils;
 
+import java.io.File;
 import java.util.*;
+import java.util.Comparator;
 
 public class Program {
 
     private Deal deal;
-    private ProductRepository productRepository = new ProductRepository();
+    private ProductRepository productRepository;
 
-    public Program() {
+    public Program(ProductsReader reader) {
+        this.productRepository = new ProductRepository(reader);
     }
 
-
     public static void main(String[] args) {
-        Program program = new Program();
-        program.productRepository.findAll();//remove it
+        ProductsReader reader = null;
+        String filePath = args[0];
+        if (filePath != null) {
+            File file = new File(filePath);
+            if (file.exists() && file.isFile()) {
+                String extension = FilenameUtils.getExtension(filePath);
+                reader = ReaderFactory.getReader(extension, filePath);
+            } else {
+                List<File> listFiles = Arrays.asList(file.listFiles());
+                SortedSet<File> filterFiles = new TreeSet<>((new Comparator<File>() {
+                    @Override
+                    public int compare(File f1, File f2) {
+                        return f1.getAbsolutePath().trim().compareTo(f2.getAbsolutePath().trim());
+                    }
+                }));
+                if (!listFiles.isEmpty()) {
+                    for (File listFile : listFiles) {
+                        if (
+                                listFile.getAbsolutePath().endsWith(FileType.CSV)
+                                        || listFile.getAbsolutePath().endsWith(FileType.DB)
+                                        || listFile.getAbsolutePath().endsWith(FileType.JSON)
+                                        || listFile.getAbsolutePath().endsWith(FileType.XML)) {
+                            filterFiles.add(listFile);
+                        }
+                    }
+                }
+                reader = ReaderFactory.getReader(FilenameUtils.getExtension(filterFiles.first().getAbsolutePath()),
+                        filterFiles.first().getAbsolutePath());
+            }
+        }
+        Program program = new Program(reader);
         program.run();
     }
 
-    private void run()  {
+
+    private void run() {
         deal = inputDeal();
         printDeal();
     }
@@ -43,7 +79,7 @@ public class Program {
 
         while (checkCondition("input products?")) {
             Product product = inputProduct();
-            productRepository.createBase();
+            //productRepository.createBase();
 
             int quantity = Integer.parseInt(keyboard("quantity of product "));
             deal.getProducts().put(product, quantity);

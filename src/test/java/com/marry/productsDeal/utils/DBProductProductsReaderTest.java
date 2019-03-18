@@ -7,11 +7,11 @@ import java.util.List;
 
 import static org.testng.Assert.*;
 
-public class DBProductReaderTest {
+public class DBProductProductsReaderTest {
 
     @Test
     public void testRead() {
-        DBProductReader dbProductReader = new DBProductReader();
+        DBProductReader dbProductReader = new DBProductReader("connection.properties");
         List<Product> productList = dbProductReader.read();
         assertTrue(productList.size() > 1);
         System.out.println();
