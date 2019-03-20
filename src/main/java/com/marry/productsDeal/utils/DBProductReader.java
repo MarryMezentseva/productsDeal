@@ -15,11 +15,12 @@ public class DBProductReader implements ProductsReader {
     private String dbDriver;
     private String dbUser;
     private String dbPassword;
-    private Connection connection;
-    private FileInputStream fis;
+    private static final String SQL = "SELECT * FROM public.products";
+
 
 
     public DBProductReader(String filePath) {
+        FileInputStream fis = null;
         Properties property = new Properties();
         try {
             fis = new FileInputStream(filePath);
@@ -36,14 +37,15 @@ public class DBProductReader implements ProductsReader {
             }
 
         }
-        dbConnection = property.getProperty("dbconnection");
-        dbDriver = property.getProperty("dbdriver");
-        dbUser = property.getProperty("dbuser");
-        dbPassword = property.getProperty("dbpassword");
+        dbConnection = property.getProperty("db.connection");
+        dbDriver = property.getProperty("db.driver");
+        dbUser = property.getProperty("db.user");
+        dbPassword = property.getProperty("db.password");
 
     }
 
     public Connection getConnection() {
+        Connection connection = null;
         try {
             connection = DriverManager.getConnection(dbConnection, dbUser, dbPassword);
             Class.forName(dbDriver);
@@ -52,20 +54,20 @@ public class DBProductReader implements ProductsReader {
         }
         return connection;
     }
-
+    @Override
     public List<Product> read() {
         Statement statement = null;
         ResultSet resultSet = null;
+        Connection connection = null;
         List<Product> productList = new ArrayList<>();
 
         try {
             connection = getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM public.products");
+            resultSet = statement.executeQuery(SQL);
             while (resultSet.next()) {
-                // int id = Integer.parseInt(resultSet.getString("id"));
                 String title = resultSet.getString("title");
-                double price = Double.parseDouble(resultSet.getString("price"));
+                double price = Double.parseDouble(resultSet.getString("price"));// convert "price" to constant
                 productList.add(new Product(title, price));
             }
         } catch (SQLException e) {
@@ -93,7 +95,7 @@ public class DBProductReader implements ProductsReader {
                     e.printStackTrace();
                 }
             }
-//
+
         }
         return productList;
     }

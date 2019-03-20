@@ -4,10 +4,6 @@ public class ShoesProduct extends Product {
     private int size;
     private String colour;
 
-    public ShoesProduct(){
-
-    }
-
     public int getSize() {
         return size;
     }

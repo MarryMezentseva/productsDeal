@@ -2,6 +2,7 @@ package com.marry.productsDeal.readerFactory;
 
 public final class FileType {
 
+ //add javadocs
  private FileType() {
  }
  public final static String CSV = "csv";

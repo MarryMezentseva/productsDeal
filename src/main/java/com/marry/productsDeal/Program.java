@@ -24,42 +24,53 @@ public class Program {
     public static void main(String[] args) {
         ProductsReader reader = null;
         String filePath = args[0];
-        if (filePath != null) {
-            File file = new File(filePath);
-            if (file.exists() && file.isFile()) {
-                String extension = FilenameUtils.getExtension(filePath);
-                reader = ReaderFactory.getReader(extension, filePath);
-            } else {
-                List<File> listFiles = Arrays.asList(file.listFiles());
-                SortedSet<File> filterFiles = new TreeSet<>((new Comparator<File>() {
-                    @Override
-                    public int compare(File f1, File f2) {
-                        return f1.getAbsolutePath().trim().compareTo(f2.getAbsolutePath().trim());
-                    }
-                }));
-                if (!listFiles.isEmpty()) {
-                    for (File listFile : listFiles) {
-                        if (
-                                listFile.getAbsolutePath().endsWith(FileType.CSV)
-                                        || listFile.getAbsolutePath().endsWith(FileType.DB)
-                                        || listFile.getAbsolutePath().endsWith(FileType.JSON)
-                                        || listFile.getAbsolutePath().endsWith(FileType.XML)) {
-                            filterFiles.add(listFile);
-                        }
+        if (filePath == null) {
+            throw new RuntimeException("File pass mustn't be a null!");
+        }
+        File file = new File(filePath);
+        if (file.exists() && file.isFile()) {
+            reader = ReaderFactory.getReader(getExtension(filePath), filePath);
+        } else {
+            List<File> listFiles = Arrays.asList(Objects.requireNonNull(file.listFiles()));
+            listFiles.sort(new Comparator<File>() {
+                @Override
+                public int compare(File file1, File file2) {
+                    return getExtension(file1.getAbsolutePath()).compareTo(getExtension(file2.getAbsolutePath()));
+                }
+            });
+
+            SortedSet<File> filterFiles = new TreeSet<>(new Comparator<File>() {
+                @Override
+                public int compare(File file1, File file2) {
+                    return getExtension(file1.getAbsolutePath()).compareTo(getExtension(file2.getAbsolutePath()));
+                }
+            });
+            if (!listFiles.isEmpty()) {
+                for (File listFile : listFiles) {
+                    if (
+                            getExtension(listFile.getAbsolutePath()).endsWith(FileType.XML)
+                                    || getExtension(listFile.getAbsolutePath()).endsWith(FileType.DB)
+                                    || getExtension(listFile.getAbsolutePath()).endsWith(FileType.JSON)
+                                    || getExtension(listFile.getAbsolutePath()).endsWith(FileType.CSV)) {
+                        filterFiles.add(listFile);
                     }
                 }
-                reader = ReaderFactory.getReader(FilenameUtils.getExtension(filterFiles.first().getAbsolutePath()),
-                        filterFiles.first().getAbsolutePath());
             }
+            reader = ReaderFactory.getReader(getExtension(filterFiles.first().getAbsolutePath()),
+                    filterFiles.first().getAbsolutePath());
         }
+
         Program program = new Program(reader);
         program.run();
     }
 
-
     private void run() {
         deal = inputDeal();
         printDeal();
+    }
+
+    private static String getExtension(String filePath) {
+        return FilenameUtils.getExtension(filePath);
     }
 
     private boolean checkCondition(String msg) {
@@ -79,7 +90,6 @@ public class Program {
 
         while (checkCondition("input products?")) {
             Product product = inputProduct();
-            //productRepository.createBase();
 
             int quantity = Integer.parseInt(keyboard("quantity of product "));
             deal.getProducts().put(product, quantity);

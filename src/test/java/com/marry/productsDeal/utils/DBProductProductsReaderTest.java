@@ -11,9 +11,8 @@ public class DBProductProductsReaderTest {
 
     @Test
     public void testRead() {
-        DBProductReader dbProductReader = new DBProductReader("connection.properties");
+        DBProductReader dbProductReader = new DBProductReader("D:\\marry_programming\\productsDeal\\src\\test\\resources\\com\\marry\\productsDeal\\utils\\productList.properties");//todo trouble with paths
         List<Product> productList = dbProductReader.read();
         assertTrue(productList.size() > 1);
-        System.out.println();
     }
 }

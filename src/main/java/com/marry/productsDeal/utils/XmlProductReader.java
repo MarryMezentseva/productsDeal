@@ -1,4 +1,5 @@
 package com.marry.productsDeal.utils;
+
 import com.marry.productsDeal.entities.Product;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -14,19 +15,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XmlProductReader implements ProductsReader{
+public class XmlProductReader implements ProductsReader {
     private String path;
 
-    public XmlProductReader(String path){
+    public XmlProductReader(String path) {
         this.path = path;
     }
 
+    @Override
     public List<Product> read() {
         List<Product> productList = new ArrayList<>();
 
         //Build DOM
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true); // never forget this!
+        factory.setNamespaceAware(true);
         DocumentBuilder builder = null;
         try {
             builder = factory.newDocumentBuilder();
@@ -62,15 +64,15 @@ public class XmlProductReader implements ProductsReader{
         }
         NodeList nodes = null;
         if (productsObject != null) {
-            nodes = ((Node)productsObject).getChildNodes();
+            nodes = ((Node) productsObject).getChildNodes();
         }
-        for (int i = 0; i < nodes.getLength(); i++){
-            if (nodes.item(i) instanceof Element){
-                Element productElement = (Element)(nodes.item(i));
+        for (int i = 0; i < nodes.getLength(); i++) {
+            if (nodes.item(i) instanceof Element) {
+                Element productElement = (Element) (nodes.item(i));
                 String title = productElement.getElementsByTagName("title").item(0).getTextContent();
                 double price = Double.parseDouble(productElement.getElementsByTagName("price").item(0).getTextContent());
                 Product product = new Product(title, price);
-               productList.add(product);
+                productList.add(product);
             }
         }
 

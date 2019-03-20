@@ -1,6 +1,6 @@
 package com.marry.productsDeal.entities;
 
-        import java.util.*;
+import java.util.*;
 
 public class Deal {
 

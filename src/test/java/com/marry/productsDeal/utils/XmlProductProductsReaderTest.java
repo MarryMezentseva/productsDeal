@@ -11,7 +11,7 @@ public class XmlProductProductsReaderTest {
 
     @Test
     public void testRead() {
-        XmlProductReader xmlProductReader = new XmlProductReader("productList.xml");
+        XmlProductReader xmlProductReader = new XmlProductReader("com/marry/productsDeal/repository/productList.xml");
         List<Product> productList = null;
         try {
             productList = xmlProductReader.read();
