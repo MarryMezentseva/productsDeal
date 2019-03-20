@@ -13,16 +13,15 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class ProductsFinding {
+public class ProductRepositoryTest {
     ProductRepository productRepository;
 
     @BeforeMethod
-    public void init(){
+    public void init() {
         ProductsReader reader = new CsvProductReader("productList.csv");
         productRepository = new ProductRepository(reader);
         List<Product> productList = reader.read();
-        assertEquals(productList.size(), 20);
-        System.out.println();
+        assertTrue(productList.size() > 1);
     }
 
     @Test
@@ -235,7 +234,7 @@ public class ProductsFinding {
         productRepository.create(new Product("bbb", 20.0));
         productRepository.create(new Product("ccc", 30.0));
         //when
-        List<Product> list = productRepository.find(new Product(null, null));
+        productRepository.find(new Product(null, null));
         //expect exception
     }
 }
