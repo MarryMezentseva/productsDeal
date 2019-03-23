@@ -13,16 +13,17 @@ private InputStream inputStream;
 
     @Test
     public void testRead() {
-        CsvProductReader csvProductReader = new CsvProductReader("productList.csv");
+        CsvProductReader csvProductReader = new CsvProductReader("com/marry/productsDeal/productList.csv");
         List<Product> productList = csvProductReader.read();
         assertTrue(productList.size()> 1);
     }
 
 @Test
     public void testReadInputStream() {
-        inputStream = CsvProductReader.class.getResourceAsStream("productList.csv");
+         inputStream = CsvProductReader.class.getResourceAsStream("com/marry/productsDeal/productList.csv");
          CsvProductReader csvProductReader = new CsvProductReader(inputStream);
-         List<Product> productList = csvProductReader.readInputStream();
+         List<Product> productList = csvProductReader.read();
          assertTrue(productList.size()> 1);
     }
  }
+//todo

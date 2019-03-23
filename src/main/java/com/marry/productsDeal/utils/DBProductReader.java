@@ -3,7 +3,9 @@ package com.marry.productsDeal.utils;
 import com.marry.productsDeal.entities.Product;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,26 +13,38 @@ import java.util.Properties;
 
 
 public class DBProductReader implements ProductsReader {
+
+    private static final String SQL = "SELECT * FROM public.products";
+    private static final String TITLE_COLUMN = "title";
+    private static final String PRICE_COLUMN = "price";
+
     private String dbConnection;
     private String dbDriver;
     private String dbUser;
     private String dbPassword;
-    private static final String SQL = "SELECT * FROM public.products";
-
-
 
     public DBProductReader(String filePath) {
-        FileInputStream fis = null;
+        try {
+            init(new FileInputStream(filePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public DBProductReader(InputStream inputStream) {
+       init(inputStream);
+    }
+
+    private void init(InputStream inputStream){
         Properties property = new Properties();
         try {
-            fis = new FileInputStream(filePath);
-            property.load(fis);
+            property.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
-            if (fis != null) {
+            if (inputStream != null) {
                 try {
-                    fis.close();
+                    inputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -41,7 +55,6 @@ public class DBProductReader implements ProductsReader {
         dbDriver = property.getProperty("db.driver");
         dbUser = property.getProperty("db.user");
         dbPassword = property.getProperty("db.password");
-
     }
 
     public Connection getConnection() {
@@ -54,6 +67,7 @@ public class DBProductReader implements ProductsReader {
         }
         return connection;
     }
+
     @Override
     public List<Product> read() {
         Statement statement = null;
@@ -66,8 +80,8 @@ public class DBProductReader implements ProductsReader {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SQL);
             while (resultSet.next()) {
-                String title = resultSet.getString("title");
-                double price = Double.parseDouble(resultSet.getString("price"));// convert "price" to constant
+                String title = resultSet.getString(TITLE_COLUMN);
+                double price = Double.parseDouble(resultSet.getString(PRICE_COLUMN));
                 productList.add(new Product(title, price));
             }
         } catch (SQLException e) {

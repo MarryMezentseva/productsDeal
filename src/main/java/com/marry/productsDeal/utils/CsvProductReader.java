@@ -1,10 +1,10 @@
 package com.marry.productsDeal.utils;
 
 import com.marry.productsDeal.entities.Product;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,11 +12,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CsvProductReader implements ProductsReader {
-    private String filePath;
+
     private InputStream inputStream;
 
     public CsvProductReader(String filePath) {
-        this.filePath = filePath;
+        try {
+            this.inputStream = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public CsvProductReader(InputStream inputStream) {
@@ -24,7 +28,8 @@ public class CsvProductReader implements ProductsReader {
     }
 
 
-    public List<Product> readInputStream() {
+    @Override
+    public List<Product> read() {
         List<Product> products = new ArrayList<>();
         String lines = null;
         try {
@@ -45,24 +50,4 @@ public class CsvProductReader implements ProductsReader {
         return products;
     }
 
-
-
-    @Override
-    public List<Product> read() {
-        List<Product> products = new ArrayList<>();
-        try {
-            File file = new File(filePath);
-            List<String> lines = FileUtils.readLines(file, "UTF-8");
-            for (int i = 1; i < lines.size(); i++) {
-                String[] res = lines.get(i).split(",");
-                Product product = new Product(res[0], Double.parseDouble(res[1]));
-                products.add(product);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return products;
-    }
 }

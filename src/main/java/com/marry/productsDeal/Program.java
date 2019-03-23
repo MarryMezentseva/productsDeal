@@ -22,22 +22,14 @@ public class Program {
     }
 
     public static void main(String[] args) {
-        ProductsReader reader = null;
+        ProductsReader reader;
         String filePath = args[0];
-        if (filePath == null) {
-            throw new RuntimeException("File pass mustn't be a null!");
-        }
+        Objects.requireNonNull(filePath, "File pass mustn't be a null!");
         File file = new File(filePath);
         if (file.exists() && file.isFile()) {
             reader = ReaderFactory.getReader(getExtension(filePath), filePath);
         } else {
-            List<File> listFiles = Arrays.asList(Objects.requireNonNull(file.listFiles()));
-            listFiles.sort(new Comparator<File>() {
-                @Override
-                public int compare(File file1, File file2) {
-                    return getExtension(file1.getAbsolutePath()).compareTo(getExtension(file2.getAbsolutePath()));
-                }
-            });
+            List<File> allFiles = Arrays.asList(Objects.requireNonNull(file.listFiles()));
 
             SortedSet<File> filterFiles = new TreeSet<>(new Comparator<File>() {
                 @Override
@@ -45,16 +37,19 @@ public class Program {
                     return getExtension(file1.getAbsolutePath()).compareTo(getExtension(file2.getAbsolutePath()));
                 }
             });
-            if (!listFiles.isEmpty()) {
-                for (File listFile : listFiles) {
+            if (!allFiles.isEmpty()) {
+                for (File f : allFiles) {
                     if (
-                            getExtension(listFile.getAbsolutePath()).endsWith(FileType.XML)
-                                    || getExtension(listFile.getAbsolutePath()).endsWith(FileType.DB)
-                                    || getExtension(listFile.getAbsolutePath()).endsWith(FileType.JSON)
-                                    || getExtension(listFile.getAbsolutePath()).endsWith(FileType.CSV)) {
-                        filterFiles.add(listFile);
+                            f.getAbsolutePath().endsWith(FileType.XML)
+                                    || f.getAbsolutePath().endsWith(FileType.DB)
+                                    || f.getAbsolutePath().endsWith(FileType.JSON)
+                                    || f.getAbsolutePath().endsWith(FileType.CSV)) {
+                        filterFiles.add(f);
                     }
                 }
+            }
+            else {
+                throw new RuntimeException("Current directory doesn't contain config files");
             }
             reader = ReaderFactory.getReader(getExtension(filterFiles.first().getAbsolutePath()),
                     filterFiles.first().getAbsolutePath());
@@ -105,7 +100,7 @@ public class Program {
         if (checkCondition("do you want to choose products from data base?")) {
             Product fromBase = null;
             try {
-                fromBase = productRepository.findByName(keyboard("product name is: "));
+                fromBase = productRepository.findByName(keyboard("product name is "));
             } catch (NonExistingProductException e) {
                 e.printStackTrace();
             }

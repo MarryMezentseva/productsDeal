@@ -14,11 +14,6 @@ public class Deal {
         this.buyer = buyer;
     }
 
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -27,17 +22,10 @@ public class Deal {
         return seller;
     }
 
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
-
     public User getBuyer() {
         return buyer;
     }
 
-    public void setBuyer(User buyer) {
-        this.buyer = buyer;
-    }
 
     public Map<Product, Integer> getProducts() {
         return products;

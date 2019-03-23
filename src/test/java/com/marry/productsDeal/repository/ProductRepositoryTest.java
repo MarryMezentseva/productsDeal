@@ -7,6 +7,7 @@ import com.marry.productsDeal.utils.ProductsReader;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.InputStream;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
@@ -18,10 +19,9 @@ public class ProductRepositoryTest {
 
     @BeforeMethod
     public void init() {
-        ProductsReader reader = new CsvProductReader("productList.csv");
+        InputStream inputStream = ProductRepositoryTest.class.getResourceAsStream("productList.csv");
+        ProductsReader reader = new CsvProductReader(inputStream);
         productRepository = new ProductRepository(reader);
-        List<Product> productList = reader.read();
-        assertTrue(productList.size() > 1);
     }
 
     @Test

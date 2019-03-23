@@ -5,16 +5,19 @@ import com.marry.productsDeal.exceptions.NonExistingProductException;
 import com.marry.productsDeal.utils.ProductsReader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-//add javadocs
+/**
+ * This class allows to use the list of products, which is read from file
+ */
 public class ProductRepository {
 
     private List<Product> productList;
 
     public ProductRepository(ProductsReader reader) {
-            this.productList = reader.read();
+        this.productList = reader.read();
     }
 
 
@@ -45,8 +48,7 @@ public class ProductRepository {
     public Product findByPrice(double price) throws NonExistingProductException {
 
         for (Product product : productList) {
-            double result = product.getPrice();//inline it
-            if (price == result) {
+            if (price == product.getPrice()) {
                 return product;
             }
         }
@@ -67,18 +69,17 @@ public class ProductRepository {
 
     private List<Product> findByNames(String... names) {
         List<Product> products = new ArrayList<>();
+        List<String> listNames = Arrays.asList(names);
         for (Product product : productList) {
             String foundName = product.getTitle();
-            for (String n : names) {
-                if (n.equals(foundName)) {
-                    products.add(product);
-                }
+            if(listNames.contains(foundName)){
+                products.add(product);
             }
         }
         return products;
     }
 
-    public List<Product> findByNamesAndSort(String... names) {//to do contain
+    public List<Product> findByNamesAndSort(String... names) {
         List<Product> products = findByNames(names);
 
         products.sort(new Comparator<Product>() {
@@ -135,7 +136,7 @@ public class ProductRepository {
     public List<Product> find(Product example) {
         String title = example.getTitle();
         Double price = example.getPrice();
-        if (title == null && (price == null)){
+        if (title == null && (price == null)) {
             throw new IllegalArgumentException("At least one parameter should be not null");
         }
 

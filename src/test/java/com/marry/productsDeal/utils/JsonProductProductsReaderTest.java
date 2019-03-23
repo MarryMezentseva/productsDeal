@@ -11,7 +11,7 @@ public class JsonProductProductsReaderTest {
 
     @Test
     public void testReadByJson()  {
-        JsonProductReader jsonProductReader = new JsonProductReader("com/marry/productsDeal/repository/productList.json");
+        JsonProductReader jsonProductReader = new JsonProductReader("com/marry/productsDeal/utils/productList.json");
         List<Product> productList = jsonProductReader.read();
         assertTrue(productList.size() > 1);
         System.out.println();

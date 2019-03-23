@@ -3,8 +3,19 @@ package com.marry.productsDeal.readerFactory;
 import com.marry.productsDeal.utils.*;
 
 import static com.marry.productsDeal.readerFactory.FileType.*;
-//add javadocs
+
+/**
+ * This class allows to choose specific reader
+ * for getting information from different configuration files, according to their extensions
+ */
 public class ReaderFactory {
+
+    /**
+     * Get reader
+     * @param extension file extension
+     * @param filePath
+     * @return
+     */
     public static ProductsReader getReader(String extension, String filePath) {
         switch (extension) {
             case CSV:
